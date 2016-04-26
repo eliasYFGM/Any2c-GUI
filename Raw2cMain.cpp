@@ -339,7 +339,7 @@ void Raw2cDialog::OnAbout(wxCommandEvent& event)
     wxAboutDialogInfo dlg;
 
     dlg.SetName(wxT("Any2c GUI"));
-    dlg.SetVersion(wxT("1.0.0"));
+    dlg.SetVersion(wxT("(git)"));
     dlg.SetDescription(wxT("Embed any file into any C/C++ project."));
     dlg.SetCopyright(wxT("(C) 2014-2016 Elias O. <eliasyfgm@gmail.com>"));
 

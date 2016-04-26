@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Any2c" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="Debug/Any2c" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Debug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="`wx-config --cflags`" />
+					<Add option='[[if (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.8.0&quot;)) print(_T(&quot;-Wno-unused-local-typedefs&quot;));]]' />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs`" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="Any2c" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="`wx-config --cflags`" />
+					<Add option='[[if (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.8.0&quot;)) print(_T(&quot;-Wno-unused-local-typedefs&quot;));]]' />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="`wx-config --libs`" />
+				</Linker>
+			</Target>
+			<Target title="Release-mingw-static">
+				<Option output="Any2c.exe" prefix_auto="1" extension_auto="0" />
+				<Option object_output="Release-mingw-static/" />
+				<Option type="0" />
+				<Option compiler="mingw_cross-compiler" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="`/usr/i586-mingw32msvc/bin/wx-config --cxxflags`" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="`/usr/i586-mingw32msvc/bin/wx-config --libs`" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="Raw2cApp.cpp" />
+		<Unit filename="Raw2cApp.h" />
+		<Unit filename="Raw2cMain.cpp" />
+		<Unit filename="Raw2cMain.h" />
+		<Unit filename="wxsmith/Raw2cdialog.wxs" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<lib_finder disable_auto="1" />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="Raw2cApp.cpp" main="Raw2cDialog" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxDialog wxs="wxsmith/Raw2cdialog.wxs" src="Raw2cMain.cpp" hdr="Raw2cMain.h" fwddecl="0" i18n="1" name="Raw2cDialog" language="CPP" />
+				</resources>
+			</wxsmith>
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

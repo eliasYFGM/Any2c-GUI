@@ -196,12 +196,6 @@ bool Raw2cDialog::ExportSourceData(wxFile& out)
         wxFile file(files[i]);
         wxFileOffset length = file.Length();
 
-        unsigned char* buffer = new unsigned char[length];
-
-        file.Read(buffer, length);
-
-        file.Close();
-
         wxFileName name(files[i]);
         wxString varname = MakeVarString(name.GetFullName());
 
@@ -226,24 +220,27 @@ bool Raw2cDialog::ExportSourceData(wxFile& out)
         str << wxT("  ");
 
         int bytes_on_line = 0;
-        int max_bytes_on_line = CheckBoxHexValues->GetValue() ? 16 : 20;
+        int max_bytes_on_line = CheckBoxHexValues->GetValue() ? 15 : 20;
         int charc = 0;
 
-        for (int i=0; i<length; ++i)
+        while (!file.Eof())
         {
+            unsigned char c;
             wxString byte_str;
+
+            file.Read(&c, 1);
 
             if (CheckBoxHexValues->GetValue())
             {
-                byte_str = wxString::Format(wxT("0x%02x"), buffer[i]);
+                byte_str = wxString::Format(wxT("0x%02x"), c);
             }
             else
             {
-                byte_str = wxString::Format(wxT("%u"), buffer[i]);
+                byte_str = wxString::Format(wxT("%u"), c);
                 charc += byte_str.Len();
             }
 
-            if (i != length - 1)
+            if (file.Tell() != length)
             {
                 byte_str << wxT(",");
                 ++charc;
@@ -275,7 +272,7 @@ bool Raw2cDialog::ExportSourceData(wxFile& out)
 
         out.Write(str);
 
-        delete[] buffer;
+        file.Close();
     }
 
     return true;

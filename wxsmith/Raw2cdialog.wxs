@@ -9,7 +9,7 @@
 				<object class="wxBoxSizer" variable="BoxSizer2" member="no">
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
-							<label>Filename:</label>
+							<label>Filename(s):</label>
 						</object>
 						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
@@ -71,7 +71,7 @@
 							</object>
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="TextCtrlHeaderMacro" member="yes">
-									<value>__DATA__H__INCLUDED__</value>
+									<value>__DATA__H</value>
 									<tooltip>Only if &quot;static data&quot; is not used.</tooltip>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>

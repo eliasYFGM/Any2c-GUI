@@ -72,7 +72,7 @@
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="TextCtrlHeaderMacro" member="yes">
 									<value>__DATA__H</value>
-									<tooltip>Only if &quot;static data&quot; is not used.</tooltip>
+									<tooltip>Macro to use when exporting a header.</tooltip>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -90,15 +90,15 @@
 								<object class="wxCheckBox" name="ID_CHECKBOX4" variable="CheckBoxLengthVar" member="yes">
 									<label>Export [__length] variable</label>
 									<checked>1</checked>
-									<tooltip>Use this if you prefer to have a length variable instead of using sizeof(*__data).</tooltip>
+									<tooltip>Use this if you prefer to have a &quot;__length&quot; variable instead of calling sizeof(*__data).</tooltip>
 								</object>
 								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
 								<object class="wxCheckBox" name="ID_CHECKBOX2" variable="CheckBoxSStruct" member="yes">
-									<label>Use [static] data (no header)</label>
-									<tooltip>Use this if you don&apos;t plan on using a header file later.</tooltip>
+									<label>Use [static] data</label>
+									<tooltip>This will add the [static] keyword to the data values.&#x0A;&#x0A;Warning: Static data may cause code duplication if used as a header!</tooltip>
 									<handler function="OnCheckBoxSStructClick" entry="EVT_CHECKBOX" />
 								</object>
 								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -120,7 +120,7 @@
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -133,7 +133,7 @@
 				<object class="wxBoxSizer" variable="BoxSizer4" member="no">
 					<object class="sizeritem">
 						<object class="wxButton" name="ID_BUTTON2" variable="ButtonExport" member="yes">
-							<label>Export .c</label>
+							<label>Export</label>
 							<font>
 								<weight>bold</weight>
 								<sysfont>wxSYS_DEFAULT_GUI_FONT</sysfont>
@@ -151,6 +151,7 @@
 								<weight>bold</weight>
 								<sysfont>wxSYS_DEFAULT_GUI_FONT</sysfont>
 							</font>
+							<tooltip>Creates a C header file with [extern] declarations of the data (does not export the actual data!).</tooltip>
 							<handler function="OnButtonExportHClick" entry="EVT_BUTTON" />
 						</object>
 						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -183,7 +184,7 @@
 			<style>wxFD_DEFAULT_STYLE|wxFD_MULTIPLE</style>
 		</object>
 		<object class="wxFileDialog" variable="FileDialog2" member="yes">
-			<message>Export source to...</message>
+			<message>Select file</message>
 			<style>wxFD_SAVE</style>
 		</object>
 	</object>

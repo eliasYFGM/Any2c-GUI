@@ -101,17 +101,17 @@ Raw2cDialog::Raw2cDialog(wxWindow* parent,wxWindowID id)
     StaticText3 = new wxStaticText(this, ID_STATICTEXT3, _("Header macro:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
     BoxSizer5->Add(StaticText3, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     TextCtrlHeaderMacro = new wxTextCtrl(this, ID_TEXTCTRL3, _("_DATA_H"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
-    TextCtrlHeaderMacro->SetToolTip(_("Only if \"static data\" is not used."));
+    TextCtrlHeaderMacro->SetToolTip(_("Macro to use when exporting a header."));
     BoxSizer5->Add(TextCtrlHeaderMacro, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer1->Add(BoxSizer5, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     GridSizer1 = new wxGridSizer(2, 2, 0, 0);
     CheckBoxLengthVar = new wxCheckBox(this, ID_CHECKBOX4, _("Export [_length] variable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX4"));
     CheckBoxLengthVar->SetValue(true);
-    CheckBoxLengthVar->SetToolTip(_("Use this if you prefer to have a length variable instead of using sizeof(*_data)."));
+    CheckBoxLengthVar->SetToolTip(_("Use this if you prefer to have a \"_length\" variable instead of calling sizeof(*_data)."));
     GridSizer1->Add(CheckBoxLengthVar, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-    CheckBoxSStruct = new wxCheckBox(this, ID_CHECKBOX2, _("Use [static] data (no header)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
+    CheckBoxSStruct = new wxCheckBox(this, ID_CHECKBOX2, _("Use [static] data"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
     CheckBoxSStruct->SetValue(false);
-    CheckBoxSStruct->SetToolTip(_("Use this if you don\'t plan on using a header file later."));
+    CheckBoxSStruct->SetToolTip(_("This will add the [static] keyword to the data values.\n\nWarning: Static data may cause code duplication if used as a header!"));
     GridSizer1->Add(CheckBoxSStruct, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     CheckBoxConst = new wxCheckBox(this, ID_CHECKBOX3, _("Constant values"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX3"));
     CheckBoxConst->SetValue(false);
@@ -120,10 +120,10 @@ Raw2cDialog::Raw2cDialog(wxWindow* parent,wxWindowID id)
     CheckBoxHexValues->SetValue(false);
     CheckBoxHexValues->SetToolTip(_("This will produce much larger sources, although with fixed lines."));
     GridSizer1->Add(CheckBoxHexValues, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer1->Add(GridSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(GridSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer1->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-    ButtonExport = new wxButton(this, ID_BUTTON2, _("Export .c"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
+    ButtonExport = new wxButton(this, ID_BUTTON2, _("Export"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
     wxFont ButtonExportFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
     if ( !ButtonExportFont.Ok() ) ButtonExportFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
     ButtonExportFont.SetWeight(wxBOLD);
@@ -134,6 +134,7 @@ Raw2cDialog::Raw2cDialog(wxWindow* parent,wxWindowID id)
     if ( !ButtonExportHFont.Ok() ) ButtonExportHFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
     ButtonExportHFont.SetWeight(wxBOLD);
     ButtonExportH->SetFont(ButtonExportHFont);
+    ButtonExportH->SetToolTip(_("Creates a C header file with [extern] declarations of the data (does not export the actual data!)."));
     BoxSizer4->Add(ButtonExportH, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button2 = new wxButton(this, ID_BUTTON3, _("About"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
     BoxSizer4->Add(Button2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -142,7 +143,7 @@ Raw2cDialog::Raw2cDialog(wxWindow* parent,wxWindowID id)
     BoxSizer1->Add(BoxSizer4, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(BoxSizer1);
     FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE|wxFD_MULTIPLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
-    FileDialog2 = new wxFileDialog(this, _("Export source to..."), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
+    FileDialog2 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
 
@@ -252,7 +253,7 @@ bool Raw2cDialog::ExportSourceData(wxFile& out)
             {
                 ++bytes_on_line;
 
-                if (bytes_on_line == max_bytes_on_line && i != length - 1)
+                if (bytes_on_line == max_bytes_on_line && file.Tell() != length)
                 {
                     str << wxT("\n  ");
                     bytes_on_line = 0;
@@ -260,7 +261,7 @@ bool Raw2cDialog::ExportSourceData(wxFile& out)
             }
             else
             {
-                if (charc >= 75 && i != length - 1)
+                if (charc >= 75 && file.Tell() != length)
                 {
                     str << wxT("\n  ");
                     charc = 0;
@@ -293,6 +294,10 @@ bool Raw2cDialog::ExportHeaderData(wxFile& out)
 
     for (wxArrayString::size_type i=0; i<files.GetCount(); ++i)
     {
+        wxFile file(files[i]);
+        wxFileOffset length = file.Length();
+        file.Close();
+
         wxFileName name(files[i]);
         wxString varname = MakeVarString(name.GetFullName());
 
@@ -315,7 +320,18 @@ bool Raw2cDialog::ExportHeaderData(wxFile& out)
             str << wxT("const ");
         }
 
-        str << wxT("unsigned char ") << varname << wxT("_data[];\n\n");
+        str << wxT("unsigned char ") << varname << wxT("_data[") << length
+          << wxT("];\n");
+
+        if (CheckBoxLengthVar->GetValue())
+        {
+            str << wxT("\n");
+        }
+    }
+
+    if (!CheckBoxLengthVar->GetValue())
+    {
+        str << wxT("\n");
     }
 
     str << wxT("#endif /* ") << TextCtrlHeaderMacro->GetValue()
@@ -333,14 +349,13 @@ void Raw2cDialog::OnQuit(wxCommandEvent& event)
 
 void Raw2cDialog::OnAbout(wxCommandEvent& event)
 {
-    wxAboutDialogInfo dlg;
+    wxString msg;
 
-    dlg.SetName(wxT("Any2c GUI"));
-    dlg.SetVersion(wxT("(git)"));
-    dlg.SetDescription(wxT("Embed any file into any C/C++ project."));
-    dlg.SetCopyright(wxT("(C) 2014-2016 Elias O. <eliasyfgm@gmail.com>"));
+    msg << wxT("Any2c GUI (git)\n");
+    msg << wxT("Utility to convert any file(s) to a C/C++ byte array.\n");
+    msg << wxT("(C) 2014-2016 Elias O. <eliasyfgm@gmail.com>");
 
-    wxAboutBox(dlg);
+    wxMessageBox(msg, wxT("About Any2c"), wxOK | wxCENTRE, this);
 }
 
 void Raw2cDialog::OnButtonBrowseClick(wxCommandEvent& event)
@@ -382,7 +397,6 @@ void Raw2cDialog::OnButtonExportClick(wxCommandEvent& event)
         return;
     }
 
-    FileDialog2->SetMessage(wxT("Export SOURCE file to..."));
     if (FileDialog2->ShowModal() == wxID_OK)
     {
         wxFile file_source(FileDialog2->GetPath(), wxFile::write);
@@ -439,7 +453,6 @@ void Raw2cDialog::OnButtonExportHClick(wxCommandEvent& event)
         return;
     }
 
-    FileDialog2->SetMessage(wxT("Export HEADER file to..."));
     if (FileDialog2->ShowModal() == wxID_OK)
     {
         wxFile file_header(FileDialog2->GetPath(), wxFile::write);

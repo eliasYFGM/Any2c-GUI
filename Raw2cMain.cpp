@@ -9,7 +9,6 @@
 
 #include "Raw2cMain.h"
 #include <wx/msgdlg.h>
-#include <wx/filename.h>
 #include <wx/aboutdlg.h>
 
 //(*InternalHeaders(Raw2cDialog)
@@ -50,8 +49,7 @@ const long Raw2cDialog::ID_STATICTEXT1 = wxNewId();
 const long Raw2cDialog::ID_TEXTCTRL1 = wxNewId();
 const long Raw2cDialog::ID_BUTTON1 = wxNewId();
 const long Raw2cDialog::ID_CHECKBOX1 = wxNewId();
-const long Raw2cDialog::ID_STATICTEXT3 = wxNewId();
-const long Raw2cDialog::ID_TEXTCTRL3 = wxNewId();
+const long Raw2cDialog::ID_CHECKBOX6 = wxNewId();
 const long Raw2cDialog::ID_STATICTEXT2 = wxNewId();
 const long Raw2cDialog::ID_TEXTCTRL2 = wxNewId();
 const long Raw2cDialog::ID_CHECKBOX4 = wxNewId();
@@ -76,7 +74,7 @@ Raw2cDialog::Raw2cDialog(wxWindow* parent,wxWindowID id)
     wxBoxSizer* BoxSizer3;
     wxBoxSizer* BoxSizer2;
     wxBoxSizer* BoxSizer4;
-    wxBoxSizer* BoxSizer5;
+    wxBoxSizer* BoxSizer6;
     wxStaticBoxSizer* StaticBoxSizer1;
 
     Create(parent, wxID_ANY, _("Any2c GUI"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
@@ -90,17 +88,15 @@ Raw2cDialog::Raw2cDialog(wxWindow* parent,wxWindowID id)
     ButtonBrowse->SetToolTip(_("You can choose multiple files by holding \"Ctrl\" or \"Shift\"."));
     BoxSizer2->Add(ButtonBrowse, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer1->Add(BoxSizer2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
     CheckBoxDefaults = new wxCheckBox(this, ID_CHECKBOX1, _("Use default settings"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
     CheckBoxDefaults->SetValue(true);
-    BoxSizer1->Add(CheckBoxDefaults, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer6->Add(CheckBoxDefaults, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    CheckBoxExportIncludeGuards = new wxCheckBox(this, ID_CHECKBOX6, _("Export #include guards in header"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX6"));
+    CheckBoxExportIncludeGuards->SetValue(true);
+    BoxSizer6->Add(CheckBoxExportIncludeGuards, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer1->Add(BoxSizer6, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Settings"));
-    BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-    StaticText3 = new wxStaticText(this, ID_STATICTEXT3, _("Header macro:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
-    BoxSizer5->Add(StaticText3, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    TextCtrlHeaderMacro = new wxTextCtrl(this, ID_TEXTCTRL3, _("_DATA_H"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
-    TextCtrlHeaderMacro->SetToolTip(_("Macro to use when exporting a header.\nLeave blank to just export the declarations alone."));
-    BoxSizer5->Add(TextCtrlHeaderMacro, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer1->Add(BoxSizer5, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
     StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Variable prefix:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
     BoxSizer3->Add(StaticText2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -109,7 +105,7 @@ Raw2cDialog::Raw2cDialog(wxWindow* parent,wxWindowID id)
     TextCtrlVarName->SetToolTip(_("This is also used to prefix _length and _data variables, too.\nNote: Default names are used when selecting multiple files."));
     BoxSizer3->Add(TextCtrlVarName, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer1->Add(BoxSizer3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    GridSizer1 = new wxGridSizer(2, 2, 0, 0);
+    GridSizer1 = new wxGridSizer(3, 2, 0, 0);
     CheckBoxLengthVar = new wxCheckBox(this, ID_CHECKBOX4, _("Export \'length\' variable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX4"));
     CheckBoxLengthVar->SetValue(true);
     CheckBoxLengthVar->Disable();
@@ -289,19 +285,21 @@ bool Raw2cDialog::ExportSourceData(wxFile& out)
     return true;
 }
 
-bool Raw2cDialog::ExportHeaderData(wxFile& out)
+bool Raw2cDialog::ExportHeaderData(wxFile& out, wxFileName& filename)
 {
     if (!out.IsOpened())
     {
         return false;
     }
 
-    wxString str;
+    wxString str, header_name;
 
-    if (!TextCtrlHeaderMacro->IsEmpty())
+    header_name = MakeVarString(filename.GetFullName().Upper());
+
+    if (CheckBoxExportIncludeGuards->GetValue())
     {
-        str << wxT("#ifndef ") << TextCtrlHeaderMacro->GetValue() << wxT("\n");
-        str << wxT("#define ") << TextCtrlHeaderMacro->GetValue() << wxT("\n");
+        str << wxT("#ifndef ") << header_name << wxT("_INCLUDED\n");
+        str << wxT("#define ") << header_name << wxT("_INCLUDED\n");
         str << wxT("\n");
     }
 
@@ -347,9 +345,9 @@ bool Raw2cDialog::ExportHeaderData(wxFile& out)
         str << wxT("\n");
     }
 
-    if (!TextCtrlHeaderMacro->IsEmpty())
+    if (CheckBoxExportIncludeGuards->GetValue())
     {
-        str << wxT("#endif /* ") << TextCtrlHeaderMacro->GetValue()
+        str << wxT("#endif /* ") << header_name << wxT("_INCLUDED")
           << wxT(" */\n");
     }
 
@@ -472,8 +470,9 @@ void Raw2cDialog::OnButtonExportHClick(wxCommandEvent& event)
     if (FileDialog2->ShowModal() == wxID_OK)
     {
         wxFile file_header(FileDialog2->GetPath(), wxFile::write);
+        wxFileName fname(FileDialog2->GetPath());
 
-        if (ExportHeaderData(file_header))
+        if (ExportHeaderData(file_header, fname))
         {
             wxMessageBox(wxT("Header file exported succesfully!"),
               wxMessageBoxCaptionStr, wxOK | wxCENTRE, this);

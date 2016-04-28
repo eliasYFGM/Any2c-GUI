@@ -12,6 +12,7 @@
 
 #include <wx/arrstr.h>
 #include <wx/file.h>
+#include <wx/filename.h>
 
 //(*Headers(Raw2cDialog)
 #include <wx/checkbox.h>
@@ -33,9 +34,9 @@ class Raw2cDialog: public wxDialog
     private:
 
         wxArrayString files;
-        wxString MakeVarString(wxString str);
-        bool ExportSourceData(wxFile& out);
-        bool ExportHeaderData(wxFile& out);
+        wxString MakeVarString(wxString);
+        bool ExportSourceData(wxFile&);
+        bool ExportHeaderData(wxFile&, wxFileName&);
 
         //(*Handlers(Raw2cDialog)
         void OnQuit(wxCommandEvent& event);
@@ -53,8 +54,7 @@ class Raw2cDialog: public wxDialog
         static const long ID_TEXTCTRL1;
         static const long ID_BUTTON1;
         static const long ID_CHECKBOX1;
-        static const long ID_STATICTEXT3;
-        static const long ID_TEXTCTRL3;
+        static const long ID_CHECKBOX6;
         static const long ID_STATICTEXT2;
         static const long ID_TEXTCTRL2;
         static const long ID_CHECKBOX4;
@@ -69,7 +69,6 @@ class Raw2cDialog: public wxDialog
 
         //(*Declarations(Raw2cDialog)
         wxCheckBox* CheckBoxLengthVar;
-        wxTextCtrl* TextCtrlHeaderMacro;
         wxButton* ButtonExportH;
         wxCheckBox* CheckBoxHexValues;
         wxTextCtrl* TextCtrlFilename;
@@ -77,7 +76,6 @@ class Raw2cDialog: public wxDialog
         wxButton* Button2;
         wxButton* ButtonBrowse;
         wxStaticText* StaticText1;
-        wxStaticText* StaticText3;
         wxFileDialog* FileDialog1;
         wxTextCtrl* TextCtrlVarName;
         wxButton* ButtonExport;
@@ -87,6 +85,7 @@ class Raw2cDialog: public wxDialog
         wxStaticText* StaticText2;
         wxCheckBox* CheckBoxDefaults;
         wxButton* ButtonQuit;
+        wxCheckBox* CheckBoxExportIncludeGuards;
         //*)
 
         DECLARE_EVENT_TABLE()

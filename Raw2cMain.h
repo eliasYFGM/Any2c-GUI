@@ -45,16 +45,18 @@ class Raw2cDialog: public wxDialog
         void OnButtonExportClick(wxCommandEvent& event);
         void OnCheckBoxSStructClick(wxCommandEvent& event);
         void OnButtonExportHClick(wxCommandEvent& event);
+        void OnCheckBoxDefaultsClick(wxCommandEvent& event);
         //*)
 
         //(*Identifiers(Raw2cDialog)
         static const long ID_STATICTEXT1;
         static const long ID_TEXTCTRL1;
         static const long ID_BUTTON1;
-        static const long ID_STATICTEXT2;
-        static const long ID_TEXTCTRL2;
+        static const long ID_CHECKBOX1;
         static const long ID_STATICTEXT3;
         static const long ID_TEXTCTRL3;
+        static const long ID_STATICTEXT2;
+        static const long ID_TEXTCTRL2;
         static const long ID_CHECKBOX4;
         static const long ID_CHECKBOX2;
         static const long ID_CHECKBOX3;
@@ -83,6 +85,7 @@ class Raw2cDialog: public wxDialog
         wxCheckBox* CheckBoxConst;
         wxBoxSizer* BoxSizer1;
         wxStaticText* StaticText2;
+        wxCheckBox* CheckBoxDefaults;
         wxButton* ButtonQuit;
         //*)
 

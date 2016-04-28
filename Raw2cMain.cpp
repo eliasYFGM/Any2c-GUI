@@ -49,10 +49,11 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 const long Raw2cDialog::ID_STATICTEXT1 = wxNewId();
 const long Raw2cDialog::ID_TEXTCTRL1 = wxNewId();
 const long Raw2cDialog::ID_BUTTON1 = wxNewId();
-const long Raw2cDialog::ID_STATICTEXT2 = wxNewId();
-const long Raw2cDialog::ID_TEXTCTRL2 = wxNewId();
+const long Raw2cDialog::ID_CHECKBOX1 = wxNewId();
 const long Raw2cDialog::ID_STATICTEXT3 = wxNewId();
 const long Raw2cDialog::ID_TEXTCTRL3 = wxNewId();
+const long Raw2cDialog::ID_STATICTEXT2 = wxNewId();
+const long Raw2cDialog::ID_TEXTCTRL2 = wxNewId();
 const long Raw2cDialog::ID_CHECKBOX4 = wxNewId();
 const long Raw2cDialog::ID_CHECKBOX2 = wxNewId();
 const long Raw2cDialog::ID_CHECKBOX3 = wxNewId();
@@ -89,35 +90,43 @@ Raw2cDialog::Raw2cDialog(wxWindow* parent,wxWindowID id)
     ButtonBrowse->SetToolTip(_("You can choose multiple files by holding \"Ctrl\" or \"Shift\"."));
     BoxSizer2->Add(ButtonBrowse, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer1->Add(BoxSizer2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    CheckBoxDefaults = new wxCheckBox(this, ID_CHECKBOX1, _("Use default settings"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+    CheckBoxDefaults->SetValue(true);
+    BoxSizer1->Add(CheckBoxDefaults, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Settings"));
-    BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-    StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Variable prefix:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
-    BoxSizer3->Add(StaticText2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    TextCtrlVarName = new wxTextCtrl(this, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
-    TextCtrlVarName->SetToolTip(_("This is also used to prefix _length and _data variables, too.\n\nNote: Default names are used when selecting multiple files."));
-    BoxSizer3->Add(TextCtrlVarName, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer1->Add(BoxSizer3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
     StaticText3 = new wxStaticText(this, ID_STATICTEXT3, _("Header macro:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
     BoxSizer5->Add(StaticText3, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     TextCtrlHeaderMacro = new wxTextCtrl(this, ID_TEXTCTRL3, _("_DATA_H"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
-    TextCtrlHeaderMacro->SetToolTip(_("Macro to use when exporting a header."));
+    TextCtrlHeaderMacro->SetToolTip(_("Macro to use when exporting a header.\nLeave blank to just export the declarations alone."));
     BoxSizer5->Add(TextCtrlHeaderMacro, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer1->Add(BoxSizer5, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
+    StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Variable prefix:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
+    BoxSizer3->Add(StaticText2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    TextCtrlVarName = new wxTextCtrl(this, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
+    TextCtrlVarName->Disable();
+    TextCtrlVarName->SetToolTip(_("This is also used to prefix _length and _data variables, too.\nNote: Default names are used when selecting multiple files."));
+    BoxSizer3->Add(TextCtrlVarName, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(BoxSizer3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     GridSizer1 = new wxGridSizer(2, 2, 0, 0);
-    CheckBoxLengthVar = new wxCheckBox(this, ID_CHECKBOX4, _("Export [_length] variable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX4"));
+    CheckBoxLengthVar = new wxCheckBox(this, ID_CHECKBOX4, _("Export \'length\' variable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX4"));
     CheckBoxLengthVar->SetValue(true);
-    CheckBoxLengthVar->SetToolTip(_("Use this if you prefer to have a \"_length\" variable instead of calling sizeof(*_data)."));
+    CheckBoxLengthVar->Disable();
+    CheckBoxLengthVar->SetToolTip(_("Use this if you prefer to have a \"_length\" variable instead of calling sizeof(data)."));
     GridSizer1->Add(CheckBoxLengthVar, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-    CheckBoxSStruct = new wxCheckBox(this, ID_CHECKBOX2, _("Use [static] data"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
+    CheckBoxSStruct = new wxCheckBox(this, ID_CHECKBOX2, _("Use static data"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
     CheckBoxSStruct->SetValue(false);
-    CheckBoxSStruct->SetToolTip(_("This will add the [static] keyword to the data values.\n\nWarning: Static data may cause code duplication if used as a header!"));
+    CheckBoxSStruct->Disable();
+    CheckBoxSStruct->SetToolTip(_("This will add the [static] keyword to the data values.\nWarning: Static data may cause code duplication if used as a header!"));
     GridSizer1->Add(CheckBoxSStruct, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     CheckBoxConst = new wxCheckBox(this, ID_CHECKBOX3, _("Constant values"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX3"));
     CheckBoxConst->SetValue(false);
+    CheckBoxConst->Disable();
     GridSizer1->Add(CheckBoxConst, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     CheckBoxHexValues = new wxCheckBox(this, ID_CHECKBOX5, _("Data in hexadecimal"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX5"));
     CheckBoxHexValues->SetValue(false);
+    CheckBoxHexValues->Disable();
     CheckBoxHexValues->SetToolTip(_("This will produce much larger sources, although with fixed lines."));
     GridSizer1->Add(CheckBoxHexValues, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer1->Add(GridSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -148,6 +157,7 @@ Raw2cDialog::Raw2cDialog(wxWindow* parent,wxWindowID id)
     BoxSizer1->SetSizeHints(this);
 
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Raw2cDialog::OnButtonBrowseClick);
+    Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&Raw2cDialog::OnCheckBoxDefaultsClick);
     Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&Raw2cDialog::OnCheckBoxSStructClick);
     Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Raw2cDialog::OnButtonExportClick);
     Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Raw2cDialog::OnButtonExportHClick);
@@ -288,9 +298,12 @@ bool Raw2cDialog::ExportHeaderData(wxFile& out)
 
     wxString str;
 
-    str << wxT("#ifndef ") << TextCtrlHeaderMacro->GetValue() << wxT("\n");
-    str << wxT("#define ") << TextCtrlHeaderMacro->GetValue() << wxT("\n");
-    str << wxT("\n");
+    if (!TextCtrlHeaderMacro->IsEmpty())
+    {
+        str << wxT("#ifndef ") << TextCtrlHeaderMacro->GetValue() << wxT("\n");
+        str << wxT("#define ") << TextCtrlHeaderMacro->GetValue() << wxT("\n");
+        str << wxT("\n");
+    }
 
     for (wxArrayString::size_type i=0; i<files.GetCount(); ++i)
     {
@@ -334,8 +347,11 @@ bool Raw2cDialog::ExportHeaderData(wxFile& out)
         str << wxT("\n");
     }
 
-    str << wxT("#endif /* ") << TextCtrlHeaderMacro->GetValue()
-      << wxT(" */\n");
+    if (!TextCtrlHeaderMacro->IsEmpty())
+    {
+        str << wxT("#endif /* ") << TextCtrlHeaderMacro->GetValue()
+          << wxT(" */\n");
+    }
 
     out.Write(str);
 
@@ -366,22 +382,32 @@ void Raw2cDialog::OnButtonBrowseClick(wxCommandEvent& event)
 
         if (files.GetCount() > 1)
         {
-            wxString str;
+            wxString str, tooltip_str;
 
             for (wxArrayString::size_type i=0; i<files.GetCount(); ++i)
             {
                 str << wxT("\"") << files[i] << wxT("\"") << wxT(" ");
+
+                tooltip_str << files[i];
+
+                if (i < files.GetCount() - 1)
+                {
+                    tooltip_str << wxT("\n");
+                }
             }
 
-            TextCtrlFilename->SetValue(str);
-            TextCtrlVarName->SetValue(wxT("<Multiple files selected>"));
+            TextCtrlFilename->SetToolTip(tooltip_str);
+
+            TextCtrlFilename->ChangeValue(str);
+            TextCtrlVarName->ChangeValue(wxT("<Multiple files selected>"));
             TextCtrlVarName->Enable(false);
         }
         else
         {
-            TextCtrlFilename->SetValue(FileDialog1->GetPath());
+            TextCtrlFilename->SetToolTip(FileDialog1->GetPath());
+            TextCtrlFilename->ChangeValue(FileDialog1->GetPath());
             wxFileName fn(FileDialog1->GetPath());
-            TextCtrlVarName->SetValue(MakeVarString(fn.GetFullName()));
+            TextCtrlVarName->ChangeValue(MakeVarString(fn.GetFullName()));
             TextCtrlVarName->Enable(true);
         }
     }
@@ -431,16 +457,6 @@ void Raw2cDialog::OnButtonExportClick(wxCommandEvent& event)
 
 void Raw2cDialog::OnCheckBoxSStructClick(wxCommandEvent& event)
 {
-    if (CheckBoxSStruct->GetValue())
-    {
-        TextCtrlHeaderMacro->Enable(false);
-        ButtonExportH->Enable(false);
-    }
-    else
-    {
-        TextCtrlHeaderMacro->Enable(true);
-        ButtonExportH->Enable(true);
-    }
 }
 
 void Raw2cDialog::OnButtonExportHClick(wxCommandEvent& event)
@@ -464,5 +480,34 @@ void Raw2cDialog::OnButtonExportHClick(wxCommandEvent& event)
         }
 
         file_header.Close();
+    }
+}
+
+void Raw2cDialog::OnCheckBoxDefaultsClick(wxCommandEvent& event)
+{
+    if (!CheckBoxDefaults->GetValue())
+    {
+        if (files.GetCount() < 2)
+        {
+            TextCtrlVarName->Enable(true);
+        }
+
+        CheckBoxConst->Enable(true);
+        CheckBoxHexValues->Enable(true);
+        CheckBoxLengthVar->Enable(true);
+        CheckBoxSStruct->Enable(true);
+    }
+    else
+    {
+        TextCtrlVarName->Enable(false);
+        CheckBoxConst->Enable(false);
+        CheckBoxHexValues->Enable(false);
+        CheckBoxLengthVar->Enable(false);
+        CheckBoxSStruct->Enable(false);
+
+        CheckBoxLengthVar->SetValue(true);
+        CheckBoxSStruct->SetValue(false);
+        CheckBoxConst->SetValue(false);
+        CheckBoxHexValues->SetValue(false);
     }
 }

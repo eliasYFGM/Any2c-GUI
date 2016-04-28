@@ -36,30 +36,18 @@
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
+				<object class="wxCheckBox" name="ID_CHECKBOX1" variable="CheckBoxDefaults" member="yes">
+					<label>Use default settings</label>
+					<checked>1</checked>
+					<handler function="OnCheckBoxDefaultsClick" entry="EVT_CHECKBOX" />
+				</object>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
 				<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
 					<label>Settings</label>
 					<orient>wxVERTICAL</orient>
-					<object class="sizeritem">
-						<object class="wxBoxSizer" variable="BoxSizer3" member="no">
-							<object class="sizeritem">
-								<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
-									<label>Variable prefix:</label>
-								</object>
-								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
-							</object>
-							<object class="sizeritem">
-								<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="TextCtrlVarName" member="yes">
-									<tooltip>This is also used to prefix __length and __data variables, too.&#x0A;&#x0A;Note: Default names are used when selecting multiple files.</tooltip>
-								</object>
-								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
-								<option>1</option>
-							</object>
-						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-					</object>
 					<object class="sizeritem">
 						<object class="wxBoxSizer" variable="BoxSizer5" member="no">
 							<object class="sizeritem">
@@ -72,7 +60,29 @@
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="TextCtrlHeaderMacro" member="yes">
 									<value>__DATA__H</value>
-									<tooltip>Macro to use when exporting a header.</tooltip>
+									<tooltip>Macro to use when exporting a header.&#x0A;Leave blank to just export the declarations alone.</tooltip>
+								</object>
+								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="BoxSizer3" member="no">
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
+									<label>Variable prefix:</label>
+								</object>
+								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="TextCtrlVarName" member="yes">
+									<enabled>0</enabled>
+									<tooltip>This is also used to prefix __length and __data variables, too.&#x0A;Note: Default names are used when selecting multiple files.</tooltip>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -88,17 +98,19 @@
 							<rows>2</rows>
 							<object class="sizeritem">
 								<object class="wxCheckBox" name="ID_CHECKBOX4" variable="CheckBoxLengthVar" member="yes">
-									<label>Export [__length] variable</label>
+									<label>Export &apos;length&apos; variable</label>
 									<checked>1</checked>
-									<tooltip>Use this if you prefer to have a &quot;__length&quot; variable instead of calling sizeof(*__data).</tooltip>
+									<enabled>0</enabled>
+									<tooltip>Use this if you prefer to have a &quot;__length&quot; variable instead of calling sizeof(data).</tooltip>
 								</object>
 								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
 								<object class="wxCheckBox" name="ID_CHECKBOX2" variable="CheckBoxSStruct" member="yes">
-									<label>Use [static] data</label>
-									<tooltip>This will add the [static] keyword to the data values.&#x0A;&#x0A;Warning: Static data may cause code duplication if used as a header!</tooltip>
+									<label>Use static data</label>
+									<enabled>0</enabled>
+									<tooltip>This will add the [static] keyword to the data values.&#x0A;Warning: Static data may cause code duplication if used as a header!</tooltip>
 									<handler function="OnCheckBoxSStructClick" entry="EVT_CHECKBOX" />
 								</object>
 								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -107,6 +119,7 @@
 							<object class="sizeritem">
 								<object class="wxCheckBox" name="ID_CHECKBOX3" variable="CheckBoxConst" member="yes">
 									<label>Constant values</label>
+									<enabled>0</enabled>
 								</object>
 								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -114,6 +127,7 @@
 							<object class="sizeritem">
 								<object class="wxCheckBox" name="ID_CHECKBOX5" variable="CheckBoxHexValues" member="yes">
 									<label>Data in hexadecimal</label>
+									<enabled>0</enabled>
 									<tooltip>This will produce much larger sources, although with fixed lines.</tooltip>
 								</object>
 								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>

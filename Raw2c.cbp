@@ -62,10 +62,13 @@
 		<Unit filename="Raw2cApp.h" />
 		<Unit filename="Raw2cMain.cpp" />
 		<Unit filename="Raw2cMain.h" />
+		<Unit filename="SettingsDialog.cpp" />
+		<Unit filename="SettingsDialog.h" />
 		<Unit filename="winres.rc">
 			<Option target="Release-mingw-static" />
 		</Unit>
 		<Unit filename="wxsmith/Raw2cdialog.wxs" />
+		<Unit filename="wxsmith/SettingsDialog.wxs" />
 		<Extensions>
 			<envvars />
 			<code_completion />
@@ -74,6 +77,7 @@
 				<gui name="wxWidgets" src="Raw2cApp.cpp" main="Raw2cDialog" init_handlers="necessary" language="CPP" />
 				<resources>
 					<wxDialog wxs="wxsmith/Raw2cdialog.wxs" src="Raw2cMain.cpp" hdr="Raw2cMain.h" fwddecl="0" i18n="1" name="Raw2cDialog" language="CPP" />
+					<wxDialog wxs="wxsmith/SettingsDialog.wxs" src="SettingsDialog.cpp" hdr="SettingsDialog.h" fwddecl="0" i18n="1" name="SettingsDialog" language="CPP" />
 				</resources>
 			</wxsmith>
 			<debugger />

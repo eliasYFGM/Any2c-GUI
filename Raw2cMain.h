@@ -10,15 +10,18 @@
 #ifndef RAW2CMAIN_H
 #define RAW2CMAIN_H
 
+#include "SettingsDialog.h"
+
 #include <wx/arrstr.h>
 #include <wx/file.h>
 #include <wx/filename.h>
 
 //(*Headers(Raw2cDialog)
-#include <wx/checkbox.h>
+#include <wx/bmpbuttn.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/button.h>
+#include <wx/radiobut.h>
 #include <wx/filedlg.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -33,59 +36,50 @@ class Raw2cDialog: public wxDialog
 
     private:
 
+        SettingsDialog* settings_dialog;
+
         wxArrayString files;
         wxString MakeVarString(wxString);
-        bool ExportSourceData(wxFile&);
-        bool ExportHeaderData(wxFile&, wxFileName&);
+        bool WriteSourceData(wxFile&);
+        bool WriteHeaderData(wxFile&, wxFileName&);
+        void DoExportSource();
+        void DoExportHeader();
 
         //(*Handlers(Raw2cDialog)
         void OnQuit(wxCommandEvent& event);
         void OnAbout(wxCommandEvent& event);
-        void OnCheckBoxDefaultSettingsClick(wxCommandEvent& event);
         void OnButtonBrowseClick(wxCommandEvent& event);
         void OnButtonExportClick(wxCommandEvent& event);
-        void OnCheckBoxSStructClick(wxCommandEvent& event);
-        void OnButtonExportHClick(wxCommandEvent& event);
-        void OnCheckBoxDefaultsClick(wxCommandEvent& event);
+        void OnButtonChangeSettingsClick(wxCommandEvent& event);
         //*)
 
         //(*Identifiers(Raw2cDialog)
         static const long ID_STATICTEXT1;
+        static const long ID_BITMAPBUTTON1;
+        static const long ID_BUTTON6;
         static const long ID_TEXTCTRL1;
-        static const long ID_BUTTON1;
-        static const long ID_CHECKBOX1;
-        static const long ID_CHECKBOX6;
         static const long ID_STATICTEXT2;
-        static const long ID_TEXTCTRL2;
-        static const long ID_CHECKBOX4;
-        static const long ID_CHECKBOX2;
-        static const long ID_CHECKBOX3;
-        static const long ID_CHECKBOX5;
+        static const long ID_RADIOBUTTON1;
+        static const long ID_RADIOBUTTON2;
         static const long ID_BUTTON2;
-        static const long ID_BUTTON5;
         static const long ID_BUTTON3;
         static const long ID_BUTTON4;
         //*)
 
         //(*Declarations(Raw2cDialog)
-        wxCheckBox* CheckBoxLengthVar;
-        wxButton* ButtonExportH;
-        wxCheckBox* CheckBoxHexValues;
-        wxTextCtrl* TextCtrlFilename;
-        wxCheckBox* CheckBoxSStruct;
+        wxRadioButton* RadioButtonSource;
+        wxRadioButton* RadioButtonHeader;
+        wxTextCtrl* TextCtrlFilenames;
+        wxButton* ButtonChangeSettings;
         wxButton* Button2;
-        wxButton* ButtonBrowse;
         wxStaticText* StaticText1;
+        wxBitmapButton* BitmapButtonBrowse;
         wxFileDialog* FileDialog1;
-        wxTextCtrl* TextCtrlVarName;
         wxButton* ButtonExport;
         wxFileDialog* FileDialog2;
-        wxCheckBox* CheckBoxConst;
         wxBoxSizer* BoxSizer1;
         wxStaticText* StaticText2;
-        wxCheckBox* CheckBoxDefaults;
         wxButton* ButtonQuit;
-        wxCheckBox* CheckBoxExportIncludeGuards;
         //*)
 
         DECLARE_EVENT_TABLE()

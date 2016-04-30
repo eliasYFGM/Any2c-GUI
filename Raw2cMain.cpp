@@ -10,12 +10,9 @@
 #include "Raw2cMain.h"
 #include <wx/msgdlg.h>
 #include <wx/aboutdlg.h>
+#include <wx/textfile.h>
 
-#ifdef __WXMSW__
-#define NEWLINE     wxT("\r\n")
-#else
-#define NEWLINE     wxT("\n")
-#endif // __WXMSW__
+#define NEWLINE     wxTextFile::GetEOL()
 
 //(*InternalHeaders(Raw2cDialog)
 #include <wx/settings.h>
@@ -89,7 +86,7 @@ Raw2cDialog::Raw2cDialog(wxWindow* parent,wxWindowID id)
     BoxSizer2->Add(ButtonChangeSettings, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer1->Add(BoxSizer2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     TextCtrlFilenames = new wxTextCtrl(this, ID_TEXTCTRL1, _("Click the folder to open file(s)..."), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_DONTWRAP, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-    TextCtrlFilenames->SetMinSize(wxSize(-1,100));
+    TextCtrlFilenames->SetMinSize(wxSize(300,150));
     BoxSizer1->Add(TextCtrlFilenames, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
     StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Export as:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
@@ -310,26 +307,19 @@ bool Raw2cDialog::WriteHeaderData(wxFile& out, wxFileName& filename)
         wxFileName name(files[i]);
         wxString varname = MakeVarString(name.GetFullName());
 
-        if (settings_dialog->CheckBoxLength->GetValue())
-        {
-            str << wxT("extern ");
-
-            if (settings_dialog->CheckBoxConst->GetValue())
-            {
-                str << wxT("const ");
-            }
-
-            str << wxT("unsigned int ") << varname << wxT("_length;") << NEWLINE;
-        }
-
-        str << wxT("extern ");
-
+        wxString vartype;
+        vartype << wxT("extern ");
         if (settings_dialog->CheckBoxConst->GetValue())
         {
-            str << wxT("const ");
+            vartype << wxT("const ");
         }
 
-        str << wxT("unsigned char ") << varname << wxT("_data[") << length
+        if (settings_dialog->CheckBoxLength->GetValue())
+        {
+            str << vartype << wxT("unsigned int ") << varname << wxT("_length;") << NEWLINE;
+        }
+
+        str << vartype <<  wxT("unsigned char ") << varname << wxT("_data[") << length
           << wxT("];") << NEWLINE;
 
         if (settings_dialog->CheckBoxLength->GetValue())

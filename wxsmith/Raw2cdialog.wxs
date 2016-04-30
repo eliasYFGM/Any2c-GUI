@@ -38,7 +38,7 @@
 			<object class="sizeritem">
 				<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="TextCtrlFilenames" member="yes">
 					<value>Click the folder to open file(s)...</value>
-					<minsize>-1,100</minsize>
+					<minsize>300,150</minsize>
 					<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_DONTWRAP</style>
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>

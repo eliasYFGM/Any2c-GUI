@@ -16,32 +16,34 @@ class SettingsDialog: public wxDialog
 		virtual ~SettingsDialog();
 
 		//(*Declarations(SettingsDialog)
+		wxCheckBox* CheckBoxStringLiterals;
 		wxButton* ButtonClose;
 		wxCheckBox* CheckBoxHexValues;
 		wxCheckBox* CheckBoxSStruct;
+		wxButton* ButtonRestoreDefaults;
 		wxCheckBox* CheckBoxLength;
 		wxCheckBox* CheckBoxIncludeGuards;
 		wxCheckBox* CheckBoxConst;
-		wxCheckBox* CheckBoxDefaults;
 		//*)
 
 	protected:
 
 		//(*Identifiers(SettingsDialog)
-		static const long ID_CHECKBOX1;
 		static const long ID_CHECKBOX6;
 		static const long ID_CHECKBOX2;
 		static const long ID_CHECKBOX3;
 		static const long ID_CHECKBOX4;
 		static const long ID_CHECKBOX5;
+		static const long ID_CHECKBOX1;
+		static const long ID_BUTTON2;
 		static const long ID_BUTTON1;
 		//*)
 
 	private:
 
 		//(*Handlers(SettingsDialog)
-		void OnCheckBoxDefaultsClick(wxCommandEvent& event);
 		void OnButtonCloseClick(wxCommandEvent& event);
+		void OnButtonRestoreDefaultsClick(wxCommandEvent& event);
 		//*)
 
 		DECLARE_EVENT_TABLE()

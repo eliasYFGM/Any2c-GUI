@@ -12,8 +12,6 @@
 #include <wx/aboutdlg.h>
 #include <wx/textfile.h>
 
-#define NEWLINE     wxTextFile::GetEOL()
-
 //(*InternalHeaders(Raw2cDialog)
 #include <wx/settings.h>
 #include <wx/string.h>
@@ -156,14 +154,13 @@ wxString Raw2cDialog::MakeVarString(wxString str)
     return str;
 }
 
-bool Raw2cDialog::WriteSourceData(wxFile& out)
+bool Raw2cDialog::WriteSourceData(std::ofstream& out)
 {
     for (wxArrayString::size_type i=0; i<files.GetCount(); ++i)
     {
         wxString str;
 
         wxFile file(files[i]);
-
         if (!file.IsOpened())
         {
             wxString msg;
@@ -182,101 +179,148 @@ bool Raw2cDialog::WriteSourceData(wxFile& out)
             }
         }
 
+        // Allocate buffer
         wxFileOffset length = file.Length();
+        unsigned char* buffer = new unsigned char[length];
+        file.Read(buffer, length);
+        file.Close();
 
         wxFileName name(files[i]);
         wxString varname = MakeVarString(name.GetFullName());
 
-        str << wxT("/*") << NEWLINE;
-        str << wxT("  ") << name.GetFullName() << NEWLINE;
-        str << wxT("  ") << length << wxT(" bytes") << NEWLINE;
-        str << wxT("*/") << NEWLINE << NEWLINE;
+        out << "/*\n";
+        out << "  " << name.GetFullName().mb_str() << "\n";
+        out << "  " << length << " bytes\n";
+        out << "*/\n\n";
 
+        wxString vartype;
+
+        // [static] and/or [const]
+        if (settings_dialog->CheckBoxSStruct->GetValue()) vartype << wxT("static ");
+        if (settings_dialog->CheckBoxConst->GetValue()) vartype << wxT("const ");
+
+        // Standard keywords
         if (settings_dialog->CheckBoxLength->GetValue())
         {
-            if (settings_dialog->CheckBoxSStruct->GetValue()) str << wxT("static ");
-            if (settings_dialog->CheckBoxConst->GetValue()) str << wxT("const ");
-            str << wxT("unsigned int ") << varname << wxT("_length = ")
-              << length << wxT(";") << NEWLINE;
+            out << vartype.mb_str() << "unsigned int " << varname.mb_str()
+              << "_length = " << length << ";\n";
         }
 
-        if (settings_dialog->CheckBoxSStruct->GetValue()) str << wxT("static ");
-        if (settings_dialog->CheckBoxConst->GetValue()) str << wxT("const ");
-        str << wxT("unsigned char ") << varname << wxT("_data[")
-          << length << wxT("] =") << NEWLINE;
-        str << wxT("{") << NEWLINE;
-        str << wxT("  ");
+        out << vartype.mb_str() << "unsigned char " << varname.mb_str()
+          << "_data[" << length << "] =\n";
+        out << "{\n";
 
-        int bytes_on_line = 0;
-        int max_bytes_on_line = settings_dialog->CheckBoxHexValues->GetValue() ? 15 : 20;
+        if (settings_dialog->CheckBoxStringLiterals->GetValue())
+        {
+            out << "\"";
+        }
+        else
+        {
+            out << "  ";
+        }
+
         int charc = 0;
 
-        while (!file.Eof())
+        for (int i=0; i<length; ++i)
         {
-            unsigned char c;
             wxString byte_str;
 
-            file.Read(&c, 1);
-
-            if (settings_dialog->CheckBoxHexValues->GetValue())
+            if (settings_dialog->CheckBoxStringLiterals->GetValue())
             {
-                byte_str = wxString::Format(wxT("0x%02x"), c);
+                if (buffer[i] >= 0x20 && buffer[i] <= 0x7e)
+                {
+                    // Quotation mark
+                    if (buffer[i] == 0x22)
+                    {
+                        byte_str << wxT("\\\"");
+                    }
+                    // Numbers
+                    else if (buffer[i] >= 0x30 && buffer[i] <= 0x39)
+                    {
+                        byte_str = wxString::Format(wxT("\\%o"), buffer[i]);
+                    }
+                    // "Escape-sequence" mark
+                    else if (buffer[i] == 0x5c)
+                    {
+                        byte_str << wxT("\\\\");
+                    }
+                    // Any other character
+                    else
+                    {
+                        byte_str = wxString::Format(wxT("%c"), buffer[i]);
+                    }
+                }
+                else
+                {
+                    if (settings_dialog->CheckBoxHexValues->GetValue())
+                    {
+                        byte_str = wxString::Format(wxT("\\x%02X"), buffer[i]);
+                    }
+                    else
+                    {
+                        byte_str = wxString::Format(wxT("\\%o"), buffer[i]);
+                    }
+                }
             }
             else
             {
-                byte_str = wxString::Format(wxT("%u"), c);
-                charc += byte_str.Len();
+                if (settings_dialog->CheckBoxHexValues->GetValue())
+                {
+                    byte_str = wxString::Format(wxT("0x%02x"), buffer[i]);
+                }
+                else
+                {
+                    byte_str = wxString::Format(wxT("%u"), buffer[i]);
+                }
             }
 
-            if (file.Tell() != length)
+            if (i != length - 1 && !settings_dialog->CheckBoxStringLiterals->GetValue())
             {
                 byte_str << wxT(",");
-                ++charc;
             }
 
-            str << byte_str;
+            charc += byte_str.Len();
 
-            if (settings_dialog->CheckBoxHexValues->GetValue())
-            {
-                ++bytes_on_line;
+            out << byte_str.mb_str();
 
-                if (bytes_on_line == max_bytes_on_line && file.Tell() != length)
-                {
-                    str << NEWLINE << wxT("  ");
-                    bytes_on_line = 0;
-                }
-            }
-            else
+            if (charc >= 75 && i != length - 1)
             {
-                if (charc >= 75 && file.Tell() != length)
+                if (settings_dialog->CheckBoxStringLiterals->GetValue())
                 {
-                    str << NEWLINE << wxT("  ");
-                    charc = 0;
+                    out << "\"\n\"";
                 }
+                else
+                {
+                    out << "\n  ";
+                }
+
+                charc = 0;
             }
         }
 
-        str << NEWLINE << wxT("};") << NEWLINE << NEWLINE;
+        if (settings_dialog->CheckBoxStringLiterals->GetValue())
+        {
+            out << "\"";
+        }
 
-        out.Write(str);
+        out << "\n};\n\n";
 
-        file.Close();
+        delete[] buffer;
     }
 
     return true;
 }
 
-bool Raw2cDialog::WriteHeaderData(wxFile& out, wxFileName& filename)
+bool Raw2cDialog::WriteHeaderData(std::ofstream& out, wxFileName& filename)
 {
-    wxString str, header_name;
+    wxString header_name;
 
     header_name = MakeVarString(filename.GetFullName().Upper());
 
     if (settings_dialog->CheckBoxIncludeGuards->GetValue())
     {
-        str << wxT("#ifndef ") << header_name << wxT("_INCLUDED") << NEWLINE;
-        str << wxT("#define ") << header_name << wxT("_INCLUDED") << NEWLINE;
-        str << NEWLINE;
+        out << "#ifndef " << header_name.mb_str() << "_INCLUDED\n";
+        out << "#define " << header_name.mb_str() << "_INCLUDED\n\n";
     }
 
     for (wxArrayString::size_type i=0; i<files.GetCount(); ++i)
@@ -316,30 +360,27 @@ bool Raw2cDialog::WriteHeaderData(wxFile& out, wxFileName& filename)
 
         if (settings_dialog->CheckBoxLength->GetValue())
         {
-            str << vartype << wxT("unsigned int ") << varname << wxT("_length;") << NEWLINE;
+            out << vartype.mb_str() << "unsigned int " << varname.mb_str() << "_length;\n";
         }
 
-        str << vartype <<  wxT("unsigned char ") << varname << wxT("_data[") << length
-          << wxT("];") << NEWLINE;
+        out << vartype.mb_str() << "unsigned char " << varname.mb_str() << "_data[" << length
+          << "];\n";
 
         if (settings_dialog->CheckBoxLength->GetValue())
         {
-            str << NEWLINE;
+            out << "\n";
         }
     }
 
     if (!settings_dialog->CheckBoxLength->GetValue())
     {
-        str << NEWLINE;
+        out << "\n";
     }
 
     if (settings_dialog->CheckBoxIncludeGuards->GetValue())
     {
-        str << wxT("#endif /* ") << header_name << wxT("_INCLUDED")
-          << wxT(" */") << NEWLINE;
+        out << "#endif /* " << header_name.mb_str() << "_INCLUDED" << " */\n";
     }
-
-    out.Write(str);
 
     return true;
 }
@@ -348,9 +389,10 @@ void Raw2cDialog::DoExportSource()
 {
     if (FileDialog2->ShowModal() == wxID_OK)
     {
-        wxFile file_source(FileDialog2->GetPath(), wxFile::write);
+        //wxFile file_source(FileDialog2->GetPath(), wxFile::write);
+        std::ofstream file_source(FileDialog2->GetPath().mb_str());
 
-        if (file_source.IsOpened())
+        if (file_source.is_open())
         {
             if (WriteSourceData(file_source))
             {
@@ -375,7 +417,7 @@ void Raw2cDialog::DoExportSource()
                 }
             }
 
-            file_source.Close();
+            file_source.close();
         }
     }
 }
@@ -384,9 +426,9 @@ void Raw2cDialog::DoExportHeader()
 {
     if (FileDialog2->ShowModal() == wxID_OK)
     {
-        wxFile file_header(FileDialog2->GetPath(), wxFile::write);
+        std::ofstream file_header(FileDialog2->GetPath().mb_str());
 
-        if (file_header.IsOpened())
+        if (file_header.is_open())
         {
             wxFileName fname(FileDialog2->GetPath());
 
@@ -396,7 +438,7 @@ void Raw2cDialog::DoExportHeader()
                   wxMessageBoxCaptionStr, wxOK | wxCENTRE, this);
             }
 
-            file_header.Close();
+            file_header.close();
         }
     }
 }

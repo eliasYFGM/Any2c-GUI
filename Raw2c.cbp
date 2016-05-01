@@ -57,7 +57,6 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-DALLEGRO_NO_MAGIC_MAIN" />
 		</Compiler>
 		<Unit filename="Raw2cApp.cpp" />
 		<Unit filename="Raw2cApp.h" />

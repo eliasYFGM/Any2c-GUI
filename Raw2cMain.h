@@ -12,6 +12,7 @@
 
 #include "SettingsDialog.h"
 
+#include <fstream>
 #include <wx/arrstr.h>
 #include <wx/file.h>
 #include <wx/filename.h>
@@ -40,8 +41,8 @@ class Raw2cDialog: public wxDialog
 
         wxArrayString files;
         wxString MakeVarString(wxString);
-        bool WriteSourceData(wxFile&);
-        bool WriteHeaderData(wxFile&, wxFileName&);
+        bool WriteSourceData(std::ofstream&);
+        bool WriteHeaderData(std::ofstream&, wxFileName&);
         void DoExportSource();
         void DoExportHeader();
 

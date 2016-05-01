@@ -237,14 +237,28 @@ bool Raw2cDialog::WriteSourceData(std::ofstream& out)
                     // Numbers
                     else if (buffer[i] >= 0x30 && buffer[i] <= 0x39)
                     {
-                        byte_str = wxString::Format(wxT("\\%o"), buffer[i]);
+                        if (settings_dialog->CheckBoxHexValues->GetValue())
+                        {
+                            byte_str = wxString::Format(wxT("\\x%02X"), buffer[i]);
+                        }
+                        else
+                        {
+                            if (buffer[i+1] >= 0x30 && buffer[i+1] <= 0x39)
+                            {
+                                byte_str = wxString::Format(wxT("\\%03o"), buffer[i]);
+                            }
+                            else
+                            {
+                                byte_str = wxString::Format(wxT("\\%o"), buffer[i]);
+                            }
+                        }
                     }
                     // "Escape-sequence" mark
                     else if (buffer[i] == 0x5c)
                     {
                         byte_str << wxT("\\\\");
                     }
-                    // Any other character
+                    // Any other character in the range 0x20 - 0x7e
                     else
                     {
                         byte_str = wxString::Format(wxT("%c"), buffer[i]);

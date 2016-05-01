@@ -206,7 +206,14 @@ bool Raw2cDialog::WriteSourceData(std::ofstream& out)
               << "_length = " << length << ";\n";
         }
 
-        out << vartype.mb_str() << "unsigned char " << varname.mb_str()
+        out << vartype.mb_str();
+
+        if (!settings_dialog->CheckBoxStringLiterals->GetValue())
+        {
+            out << "unsigned ";
+        }
+
+        out << "char " << varname.mb_str()
           << "_data[" << length << "] =\n";
         out << "{\n";
 
@@ -227,22 +234,26 @@ bool Raw2cDialog::WriteSourceData(std::ofstream& out)
 
             if (settings_dialog->CheckBoxStringLiterals->GetValue())
             {
-                if (buffer[i] >= 0x20 && buffer[i] <= 0x7e)
+                // Hexadecimal
+                if (settings_dialog->CheckBoxHexValues->GetValue())
                 {
-                    // Quotation mark
-                    if (buffer[i] == 0x22)
+                    // Always in the same format
+                    byte_str = wxString::Format(wxT("\\x%02X"), buffer[i]);
+                }
+                // Octal
+                else
+                {
+                    if (buffer[i] >= 0x20 && buffer[i] <= 0x7e)
                     {
-                        byte_str << wxT("\\\"");
-                    }
-                    // Numbers
-                    else if (buffer[i] >= 0x30 && buffer[i] <= 0x39)
-                    {
-                        if (settings_dialog->CheckBoxHexValues->GetValue())
+                        // Quotation mark
+                        if (buffer[i] == 0x22)
                         {
-                            byte_str = wxString::Format(wxT("\\x%02X"), buffer[i]);
+                            byte_str << wxT("\\\"");
                         }
-                        else
+                        // Numbers
+                        else if (buffer[i] >= 0x30 && buffer[i] <= 0x39)
                         {
+                            // Check if the next character is a number
                             if (buffer[i+1] >= 0x30 && buffer[i+1] <= 0x39)
                             {
                                 byte_str = wxString::Format(wxT("\\%03o"), buffer[i]);
@@ -252,24 +263,18 @@ bool Raw2cDialog::WriteSourceData(std::ofstream& out)
                                 byte_str = wxString::Format(wxT("\\%o"), buffer[i]);
                             }
                         }
+                        // "Escape-sequence" mark
+                        else if (buffer[i] == 0x5c)
+                        {
+                            byte_str << wxT("\\\\");
+                        }
+                        // Any other character in the range 0x20 - 0x7e
+                        else
+                        {
+                            byte_str = wxString::Format(wxT("%c"), buffer[i]);
+                        }
                     }
-                    // "Escape-sequence" mark
-                    else if (buffer[i] == 0x5c)
-                    {
-                        byte_str << wxT("\\\\");
-                    }
-                    // Any other character in the range 0x20 - 0x7e
-                    else
-                    {
-                        byte_str = wxString::Format(wxT("%c"), buffer[i]);
-                    }
-                }
-                else
-                {
-                    if (settings_dialog->CheckBoxHexValues->GetValue())
-                    {
-                        byte_str = wxString::Format(wxT("\\x%02X"), buffer[i]);
-                    }
+                    // Default output
                     else
                     {
                         byte_str = wxString::Format(wxT("\\%o"), buffer[i]);
@@ -286,15 +291,14 @@ bool Raw2cDialog::WriteSourceData(std::ofstream& out)
                 {
                     byte_str = wxString::Format(wxT("%u"), buffer[i]);
                 }
-            }
 
-            if (i != length - 1 && !settings_dialog->CheckBoxStringLiterals->GetValue())
-            {
-                byte_str << wxT(",");
+                if (i != length - 1)
+                {
+                    byte_str << wxT(",");
+                }
             }
 
             charc += byte_str.Len();
-
             out << byte_str.mb_str();
 
             if (charc >= 75 && i != length - 1)

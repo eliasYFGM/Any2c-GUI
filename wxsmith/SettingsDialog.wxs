@@ -54,6 +54,7 @@
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="ID_CHECKBOX1" variable="CheckBoxStringLiterals" member="yes">
 							<label>Use string literals</label>
+							<checked>1</checked>
 							<tooltip>This can help reduce the size of the generated files quite a bit.&#x0A;&#x0A;Note: &quot;unsigned&quot; type is ommited for __data.</tooltip>
 						</object>
 						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>

@@ -237,8 +237,29 @@ bool Raw2cDialog::WriteSourceData(std::ofstream& out)
                 // Hexadecimal
                 if (settings_dialog->CheckBoxHexValues->GetValue())
                 {
-                    // Always in the same format
-                    byte_str = wxString::Format(wxT("\\x%02X"), buffer[i]);
+                    if ( (buffer[i] >= 0x20 && buffer[i] <= 0x2f)
+                      || (buffer[i] >= 0x3a && buffer[i] <= 0x40)
+                      || (buffer[i] >= 0x5b && buffer[i] <= 0x60)
+                      || (buffer[i] >= 0x7b && buffer[i] <= 0x7e) )
+                    {
+                        if (buffer[i] == 0x22)
+                        {
+                            byte_str << wxT("\\\"");
+                        }
+                        else if (buffer[i] == 0x5c)
+                        {
+                            byte_str << wxT("\\\\");
+                        }
+                        else
+                        {
+                            byte_str = wxString::Format(wxT("%c"), buffer[i]);
+                        }
+                    }
+                    else
+                    {
+                        // Default output for hex
+                        byte_str = wxString::Format(wxT("\\x%02X"), buffer[i]);
+                    }
                 }
                 // Octal
                 else

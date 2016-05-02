@@ -48,7 +48,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	CheckBoxHexValues->SetToolTip(_("This will produce much larger source files, although with fixed-length lines."));
 	StaticBoxSizer1->Add(CheckBoxHexValues, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	CheckBoxStringLiterals = new wxCheckBox(this, ID_CHECKBOX1, _("Use string literals"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
-	CheckBoxStringLiterals->SetValue(false);
+	CheckBoxStringLiterals->SetValue(true);
 	CheckBoxStringLiterals->SetToolTip(_("This can help reduce the size of the generated files quite a bit.\n\nNote: \"unsigned\" type is ommited for _data."));
 	StaticBoxSizer1->Add(CheckBoxStringLiterals, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer1->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -85,5 +85,5 @@ void SettingsDialog::OnButtonRestoreDefaultsClick(wxCommandEvent& event)
     CheckBoxSStruct->SetValue(false);
     CheckBoxConst->SetValue(false);
     CheckBoxHexValues->SetValue(false);
-    CheckBoxStringLiterals->SetValue(false);
+    CheckBoxStringLiterals->SetValue(true);
 }

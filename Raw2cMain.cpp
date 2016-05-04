@@ -252,6 +252,7 @@ bool Raw2cDialog::WriteSourceData(std::ofstream& out)
                         }
                         else
                         {
+                            // Any other character
                             byte_str = wxString::Format(wxT("%c"), buffer[i]);
                         }
                     }
@@ -402,8 +403,14 @@ bool Raw2cDialog::WriteHeaderData(std::ofstream& out, wxFileName& filename)
             out << vartype.mb_str() << "unsigned int " << varname.mb_str() << "_length;\n";
         }
 
-        out << vartype.mb_str() << "unsigned char " << varname.mb_str() << "_data[" << length
-          << "];\n";
+        out << vartype.mb_str();
+
+        if (!settings_dialog->CheckBoxStringLiterals->GetValue())
+        {
+            out << "unsigned ";
+        }
+
+        out << "char " << varname.mb_str() << "_data[" << length << "];\n";
 
         if (settings_dialog->CheckBoxLength->GetValue())
         {

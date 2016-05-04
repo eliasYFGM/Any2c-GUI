@@ -29,12 +29,12 @@ class SettingsDialog: public wxDialog
 	protected:
 
 		//(*Identifiers(SettingsDialog)
-		static const long ID_CHECKBOX6;
 		static const long ID_CHECKBOX2;
+		static const long ID_CHECKBOX1;
 		static const long ID_CHECKBOX3;
 		static const long ID_CHECKBOX4;
 		static const long ID_CHECKBOX5;
-		static const long ID_CHECKBOX1;
+		static const long ID_CHECKBOX6;
 		static const long ID_BUTTON2;
 		static const long ID_BUTTON1;
 		//*)

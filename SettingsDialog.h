@@ -6,6 +6,8 @@
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/button.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 //*)
 
 class SettingsDialog: public wxDialog
@@ -22,6 +24,8 @@ class SettingsDialog: public wxDialog
 		wxCheckBox* CheckBoxSStruct;
 		wxButton* ButtonRestoreDefaults;
 		wxCheckBox* CheckBoxLength;
+		wxTextCtrl* TextCtrlMaxChars;
+		wxStaticText* StaticText1;
 		wxCheckBox* CheckBoxIncludeGuards;
 		wxCheckBox* CheckBoxConst;
 		//*)
@@ -35,6 +39,8 @@ class SettingsDialog: public wxDialog
 		static const long ID_CHECKBOX4;
 		static const long ID_CHECKBOX5;
 		static const long ID_CHECKBOX6;
+		static const long ID_STATICTEXT1;
+		static const long ID_TEXTCTRL1;
 		static const long ID_BUTTON2;
 		static const long ID_BUTTON1;
 		//*)

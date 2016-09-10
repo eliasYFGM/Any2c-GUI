@@ -37,7 +37,7 @@ class Raw2cDialog: public wxDialog
 
     private:
 
-        SettingsDialog* settings_dialog;
+        SettingsDialog* settings_dlg;
 
         wxArrayString files;
         wxString MakeVarString(wxString);

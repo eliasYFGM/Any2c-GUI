@@ -44,14 +44,15 @@
 				<Option compiler="mingw_cross-compiler" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="`/usr/i586-mingw32msvc/bin/wx-config --cxxflags`" />
+					<Add option="`/usr/i686-w64-mingw32/bin/wx-config --cxxflags`" />
 				</Compiler>
 				<ResourceCompiler>
-					<Add directory="/usr/i586-mingw32msvc/include/wx-2.8" />
+					<Add directory="/usr/i686-w64-mingw32/include/wx-3.0" />
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="`/usr/i586-mingw32msvc/bin/wx-config --libs`" />
+					<Add option="`/usr/i686-w64-mingw32/bin/wx-config --libs`" />
+					<Add option="-static" />
 				</Linker>
 			</Target>
 		</Build>

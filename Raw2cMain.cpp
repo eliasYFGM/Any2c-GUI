@@ -57,7 +57,6 @@ const long Raw2cDialog::ID_STATICTEXT2 = wxNewId();
 const long Raw2cDialog::ID_RADIOBUTTON1 = wxNewId();
 const long Raw2cDialog::ID_RADIOBUTTON2 = wxNewId();
 const long Raw2cDialog::ID_BUTTON2 = wxNewId();
-const long Raw2cDialog::ID_BUTTON3 = wxNewId();
 const long Raw2cDialog::ID_BUTTON4 = wxNewId();
 //*)
 
@@ -104,14 +103,10 @@ Raw2cDialog::Raw2cDialog(wxWindow* parent,wxWindowID id)
   ButtonExportFont.SetWeight(wxBOLD);
   ButtonExport->SetFont(ButtonExportFont);
   BoxSizer4->Add(ButtonExport, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  Button2 = new wxButton(this, ID_BUTTON3, _("About"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
-  BoxSizer4->Add(Button2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   ButtonQuit = new wxButton(this, ID_BUTTON4, _("Quit"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
   BoxSizer4->Add(ButtonQuit, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   BoxSizer1->Add(BoxSizer4, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   SetSizer(BoxSizer1);
-  FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE|wxFD_MULTIPLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
-  FileDialog2 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
   FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE|wxFD_MULTIPLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
   FileDialog2 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
   BoxSizer1->Fit(this);
@@ -120,7 +115,6 @@ Raw2cDialog::Raw2cDialog(wxWindow* parent,wxWindowID id)
   Connect(ID_BITMAPBUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Raw2cDialog::OnButtonBrowseClick);
   Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Raw2cDialog::OnButtonChangeSettingsClick);
   Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Raw2cDialog::OnButtonExportClick);
-  Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Raw2cDialog::OnAbout);
   Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Raw2cDialog::OnQuit);
   //*)
 
@@ -497,17 +491,6 @@ void Raw2cDialog::DoExportHeader()
 void Raw2cDialog::OnQuit(wxCommandEvent& event)
 {
   Close();
-}
-
-void Raw2cDialog::OnAbout(wxCommandEvent& event)
-{
-  wxString msg;
-
-  msg << "Any2c GUI (git)\n";
-  msg << "Utility to convert any file(s) to a C/C++ byte array.\n";
-  msg << "(C) 2014-2016 Elias O. <eliasyfgm@gmail.com>";
-
-  wxMessageBox(msg, "About Any2c", wxOK | wxCENTRE, this);
 }
 
 void Raw2cDialog::OnButtonBrowseClick(wxCommandEvent& event)

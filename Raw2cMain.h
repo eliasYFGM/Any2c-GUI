@@ -48,7 +48,6 @@ class Raw2cDialog: public wxDialog
 
         //(*Handlers(Raw2cDialog)
         void OnQuit(wxCommandEvent& event);
-        void OnAbout(wxCommandEvent& event);
         void OnButtonBrowseClick(wxCommandEvent& event);
         void OnButtonExportClick(wxCommandEvent& event);
         void OnButtonChangeSettingsClick(wxCommandEvent& event);
@@ -63,7 +62,6 @@ class Raw2cDialog: public wxDialog
         static const long ID_RADIOBUTTON1;
         static const long ID_RADIOBUTTON2;
         static const long ID_BUTTON2;
-        static const long ID_BUTTON3;
         static const long ID_BUTTON4;
         //*)
 
@@ -72,7 +70,6 @@ class Raw2cDialog: public wxDialog
         wxRadioButton* RadioButtonHeader;
         wxTextCtrl* TextCtrlFilenames;
         wxButton* ButtonChangeSettings;
-        wxButton* Button2;
         wxStaticText* StaticText1;
         wxBitmapButton* BitmapButtonBrowse;
         wxFileDialog* FileDialog1;

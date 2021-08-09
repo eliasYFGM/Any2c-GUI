@@ -21,7 +21,6 @@ class SettingsDialog: public wxDialog
 		wxCheckBox* CheckBoxStringLiterals;
 		wxButton* ButtonClose;
 		wxCheckBox* CheckBoxHexValues;
-		wxCheckBox* CheckBoxSStruct;
 		wxButton* ButtonRestoreDefaults;
 		wxCheckBox* CheckBoxLength;
 		wxTextCtrl* TextCtrlMaxChars;
@@ -35,9 +34,8 @@ class SettingsDialog: public wxDialog
 		//(*Identifiers(SettingsDialog)
 		static const long ID_CHECKBOX2;
 		static const long ID_CHECKBOX1;
-		static const long ID_CHECKBOX3;
-		static const long ID_CHECKBOX4;
 		static const long ID_CHECKBOX5;
+		static const long ID_CHECKBOX4;
 		static const long ID_CHECKBOX6;
 		static const long ID_STATICTEXT1;
 		static const long ID_TEXTCTRL1;
@@ -50,6 +48,8 @@ class SettingsDialog: public wxDialog
 		//(*Handlers(SettingsDialog)
 		void OnButtonCloseClick(wxCommandEvent& event);
 		void OnButtonRestoreDefaultsClick(wxCommandEvent& event);
+		void OnCheckBoxStringLiteralsClick(wxCommandEvent& event);
+		void OnTextCtrlMaxCharsText(wxCommandEvent& event);
 		//*)
 
 		DECLARE_EVENT_TABLE()

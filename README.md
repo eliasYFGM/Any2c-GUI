@@ -2,8 +2,8 @@
 
 ![any2cgui](http://i.imgur.com/rUUuATS.png)
 
-Any2c (formerly Raw2c, hence the filenames) is a GUI utility to convert files into byte data that can be used in C or C++ projects. It supports multiple files and can export .c sources and .h (declarations only) include files.
+Any2c (formerly Raw2c, hence the filenames) is a GUI utility to convert files into byte data that can be used inside a C or C++ application. It supports multiple files and can export .c or .cpp sources along with a header file.
 
-With the default settings, the produced files are typically 3x the original file size (for compressed files) but they can be much smaller (for text files) or larger depending on the content and the settings used.
+By default, Any2c will use string literals for the produced sources to reduce their size as much as possible. If the option for the string literals is disabled, it will produce arrays of [unsigned char] values, either in decimal or hexadecimal.
 
 Developed using wxWidgets 3.0 and Code::Blocks (+ wxSmith plugin).

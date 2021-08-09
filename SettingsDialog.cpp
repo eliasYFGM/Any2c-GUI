@@ -8,9 +8,8 @@
 //(*IdInit(SettingsDialog)
 const long SettingsDialog::ID_CHECKBOX2 = wxNewId();
 const long SettingsDialog::ID_CHECKBOX1 = wxNewId();
-const long SettingsDialog::ID_CHECKBOX3 = wxNewId();
-const long SettingsDialog::ID_CHECKBOX4 = wxNewId();
 const long SettingsDialog::ID_CHECKBOX5 = wxNewId();
+const long SettingsDialog::ID_CHECKBOX4 = wxNewId();
 const long SettingsDialog::ID_CHECKBOX6 = wxNewId();
 const long SettingsDialog::ID_STATICTEXT1 = wxNewId();
 const long SettingsDialog::ID_TEXTCTRL1 = wxNewId();
@@ -42,25 +41,22 @@ SettingsDialog::SettingsDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	CheckBoxStringLiterals->SetValue(true);
 	CheckBoxStringLiterals->SetToolTip(_("This can help reduce the size of the generated files quite a bit.\n\nNote: \"unsigned\" type is ommited for _data."));
 	StaticBoxSizer1->Add(CheckBoxStringLiterals, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	CheckBoxHexValues = new wxCheckBox(this, ID_CHECKBOX5, _("Use hex values instead of decimal"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX5"));
+	CheckBoxHexValues->SetValue(false);
+	CheckBoxHexValues->Disable();
+	StaticBoxSizer1->Add(CheckBoxHexValues, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-	CheckBoxSStruct = new wxCheckBox(this, ID_CHECKBOX3, _("Add [static]"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX3"));
-	CheckBoxSStruct->SetValue(false);
-	CheckBoxSStruct->SetToolTip(_("Warning: Using this option with headers may cause code duplication!"));
-	BoxSizer4->Add(CheckBoxSStruct, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	CheckBoxConst = new wxCheckBox(this, ID_CHECKBOX4, _("Add [const]"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX4"));
+	CheckBoxConst = new wxCheckBox(this, ID_CHECKBOX4, _("Add \"const\" to variable names"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX4"));
 	CheckBoxConst->SetValue(false);
 	BoxSizer4->Add(CheckBoxConst, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	StaticBoxSizer1->Add(BoxSizer4, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
-	CheckBoxHexValues = new wxCheckBox(this, ID_CHECKBOX5, _("Use hexadecimal for data values"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX5"));
-	CheckBoxHexValues->SetValue(false);
-	StaticBoxSizer1->Add(CheckBoxHexValues, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	CheckBoxIncludeGuards = new wxCheckBox(this, ID_CHECKBOX6, _("Export #include guards in header"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX6"));
 	CheckBoxIncludeGuards->SetValue(false);
 	StaticBoxSizer1->Add(CheckBoxIncludeGuards, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
 	StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Max characters per line:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
 	BoxSizer3->Add(StaticText1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	TextCtrlMaxChars = new wxTextCtrl(this, ID_TEXTCTRL1, _("80"), wxDefaultPosition, wxDefaultSize, wxTE_RIGHT, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+	TextCtrlMaxChars = new wxTextCtrl(this, ID_TEXTCTRL1, _("100"), wxDefaultPosition, wxDefaultSize, wxTE_RIGHT, wxDefaultValidator, _T("ID_TEXTCTRL1"));
 	TextCtrlMaxChars->SetToolTip(_("Indicates the max length of the lines in the source file."));
 	BoxSizer3->Add(TextCtrlMaxChars, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	StaticBoxSizer1->Add(BoxSizer3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
@@ -75,6 +71,8 @@ SettingsDialog::SettingsDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
 
+	Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&SettingsDialog::OnCheckBoxStringLiteralsClick);
+	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&SettingsDialog::OnTextCtrlMaxCharsText);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SettingsDialog::OnButtonRestoreDefaultsClick);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SettingsDialog::OnButtonCloseClick);
 	//*)
@@ -100,9 +98,9 @@ void SettingsDialog::OnButtonCloseClick(wxCommandEvent& event)
         {
             TextCtrlMaxChars->ChangeValue(wxT("40"));
         }
-        else if (val > 200)
+        else if (val > 1024)
         {
-            TextCtrlMaxChars->ChangeValue(wxT("200"));
+            TextCtrlMaxChars->ChangeValue(wxT("1024"));
         }
     }
 
@@ -113,10 +111,22 @@ void SettingsDialog::OnButtonRestoreDefaultsClick(wxCommandEvent& event)
 {
     CheckBoxLength->SetValue(true);
     CheckBoxStringLiterals->SetValue(true);
-    CheckBoxSStruct->SetValue(false);
     CheckBoxConst->SetValue(false);
     CheckBoxHexValues->SetValue(false);
     CheckBoxIncludeGuards->SetValue(false);
 
-    TextCtrlMaxChars->ChangeValue(wxT("80"));
+    TextCtrlMaxChars->ChangeValue(wxT("100"));
+}
+
+void SettingsDialog::OnCheckBoxStringLiteralsClick(wxCommandEvent& event)
+{
+   if (!CheckBoxStringLiterals->GetValue()) {
+      CheckBoxHexValues->Enable();
+   } else {
+      CheckBoxHexValues->Enable(false);
+   }
+}
+
+void SettingsDialog::OnTextCtrlMaxCharsText(wxCommandEvent& event)
+{
 }

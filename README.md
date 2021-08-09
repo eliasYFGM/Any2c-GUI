@@ -1,6 +1,6 @@
 # Any2c GUI
 
-![any2cgui](http://i.imgur.com/rUUuATS.png)
+![any2cgui](https://i.ibb.co/48hfRLY/Any2c-GUI-v1-1-Linux.png)
 
 Any2c (formerly Raw2c, hence the filenames) is a GUI utility to convert files into byte data that can be used inside a C or C++ application. It supports multiple files and can export .c or .cpp sources along with a header file.
 

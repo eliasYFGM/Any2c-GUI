@@ -23,6 +23,16 @@
 							<label>Use string literals</label>
 							<checked>1</checked>
 							<tooltip>This can help reduce the size of the generated files quite a bit.&#x0A;&#x0A;Note: &quot;unsigned&quot; type is ommited for __data.</tooltip>
+							<handler function="OnCheckBoxStringLiteralsClick" entry="EVT_CHECKBOX" />
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="ID_CHECKBOX5" variable="CheckBoxHexValues" member="yes">
+							<label>Use hex values instead of decimal</label>
+							<enabled>0</enabled>
 						</object>
 						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
@@ -31,17 +41,8 @@
 					<object class="sizeritem">
 						<object class="wxBoxSizer" variable="BoxSizer4" member="no">
 							<object class="sizeritem">
-								<object class="wxCheckBox" name="ID_CHECKBOX3" variable="CheckBoxSStruct" member="yes">
-									<label>Add [static]</label>
-									<tooltip>Warning: Using this option with headers may cause code duplication!</tooltip>
-								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
-								<option>1</option>
-							</object>
-							<object class="sizeritem">
 								<object class="wxCheckBox" name="ID_CHECKBOX4" variable="CheckBoxConst" member="yes">
-									<label>Add [const]</label>
+									<label>Add &quot;const&quot; to variable names</label>
 								</object>
 								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -49,14 +50,6 @@
 							</object>
 						</object>
 						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-						<option>1</option>
-					</object>
-					<object class="sizeritem">
-						<object class="wxCheckBox" name="ID_CHECKBOX5" variable="CheckBoxHexValues" member="yes">
-							<label>Use hexadecimal for data values</label>
-						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
@@ -79,9 +72,10 @@
 							</object>
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="TextCtrlMaxChars" member="yes">
-									<value>80</value>
+									<value>100</value>
 									<tooltip>Indicates the max length of the lines in the source file.</tooltip>
 									<style>wxTE_RIGHT</style>
+									<handler function="OnTextCtrlMaxCharsText" entry="EVT_TEXT" />
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>

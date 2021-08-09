@@ -9,7 +9,7 @@
 				<object class="wxBoxSizer" variable="BoxSizer2" member="no">
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
-							<label>Filename(s):</label>
+							<label>File(s):</label>
 						</object>
 						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
@@ -37,7 +37,7 @@
 			</object>
 			<object class="sizeritem">
 				<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="TextCtrlFilenames" member="yes">
-					<value>Click the folder to open file(s)...</value>
+					<value>Click the folder button to choose the file(s) to convert</value>
 					<minsize>300,150</minsize>
 					<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_DONTWRAP</style>
 				</object>
@@ -49,15 +49,14 @@
 				<object class="wxBoxSizer" variable="BoxSizer3" member="no">
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
-							<label>Export as:</label>
+							<label>Source extension:</label>
 						</object>
 						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
-						<option>1</option>
 					</object>
 					<object class="sizeritem">
-						<object class="wxRadioButton" name="ID_RADIOBUTTON1" variable="RadioButtonSource" member="yes">
-							<label>Source</label>
+						<object class="wxRadioButton" name="ID_RADIOBUTTON1" variable="RadioButtonC" member="yes">
+							<label>.c</label>
 							<selected>1</selected>
 							<tooltip>Exports the data in the form of a .c source file.</tooltip>
 						</object>
@@ -66,8 +65,8 @@
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
-						<object class="wxRadioButton" name="ID_RADIOBUTTON2" variable="RadioButtonHeader" member="yes">
-							<label>Header</label>
+						<object class="wxRadioButton" name="ID_RADIOBUTTON2" variable="RadioButtonCpp" member="yes">
+							<label>.cpp</label>
 							<tooltip>Exports data in the form of a header file (declarations only- will not export the actual data!)</tooltip>
 						</object>
 						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -88,6 +87,15 @@
 								<sysfont>wxSYS_DEFAULT_GUI_FONT</sysfont>
 							</font>
 							<handler function="OnButtonExportClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON1" variable="ButtonAbout" member="yes">
+							<label>About...</label>
+							<handler function="OnButtonAboutClick" entry="EVT_BUTTON" />
 						</object>
 						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
